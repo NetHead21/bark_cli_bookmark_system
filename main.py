@@ -1,9 +1,10 @@
+import os
 import commands
 from collections import OrderedDict
 
 
 class Option:
-    def __init__(self, name: str, command: object, prep_call: str = None) -> None:
+    def __init__(self, name: str, command: object, prep_call: object = None) -> None:
         self.name = name
         self.command = command
         self.prep_call = prep_call
@@ -23,20 +24,76 @@ def print_options(options: dict) -> None:
     print()
 
 
-if __name__ == "__main__":
+def option_choice_is_valid(choice: str, options: dict) -> bool:
+    return choice in options
+
+
+def get_option_choice(options: dict):
+    choice = input("Choose an option: ").upper()
+    while not option_choice_is_valid(choice, options):
+        print("Invalid choice!")
+        choice = input("Choose an option: ").upper()
+    return options[choice]
+
+
+def get_user_input(label: str, required: bool = True) -> str:
+    value = input(f"{label}: ") or None
+    while required and not value:
+        value = input(f"{label}: ") or None
+    return value
+
+
+def get_new_bookmark_data() -> dict:
+    return {
+        "title": get_user_input("Title"),
+        "url": get_user_input("URL"),
+        "notes": get_user_input("Notes", required=False),
+    }
+
+
+def get_bookmark_id_for_deletion() -> str:
+    return get_user_input("Enter a bookmark ID to delete: ")
+
+
+def clear_screen() -> None:
+    clear = "cls" if os.name == "nt" else "clear"
+    os.system(clear)
+
+
+def loop():
+    clear_screen()
     print("Welcome to Bark!")
+
     options = OrderedDict(
         {
-            "A": Option("Add a bookmark", commands.AddBookmarkCommand()),
+            "A": Option(
+                "Add a bookmark",
+                commands.AddBookmarkCommand(),
+                prep_call=get_new_bookmark_data,
+            ),
             "B": Option("List bookmarks by date", commands.ListBookmarksCommand()),
             "T": Option(
                 "List bookmarks by title",
                 commands.ListBookmarksCommand(order_by="title"),
             ),
-            "D": Option("Delete a bookmark", commands.DeleteBookmarkCommand()),
+            "D": Option(
+                "Delete a bookmark",
+                commands.DeleteBookmarkCommand(),
+                prep_call=get_bookmark_id_for_deletion,
+            ),
             "Q": Option("Quit", commands.QuitCommand()),
         }
     )
-    print_options(options)
 
+    print_options(options)
+    chosen_option = get_option_choice(options)
+    clear_screen()
+    chosen_option.choose()
+
+    _ = input("Press ENTER to return to menu")
+
+
+if __name__ == "__main__":
     commands.CreateBookmarksTableCommand().execute()
+    while True:
+        loop()

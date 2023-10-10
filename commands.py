@@ -39,7 +39,7 @@ class ListBookmarksCommand:
 
 class DeleteBookmarkCommand:
     def execute(self, data: dict) -> str:
-        db.delete("bookmaks", {"id": data})
+        db.delete("bookmarks", {"id": data})
         return "Bookmak Deleted!"
 
 
