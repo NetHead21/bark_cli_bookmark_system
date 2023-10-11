@@ -1,0 +1,13 @@
+class Option:
+    def __init__(self, name: str, command: object, prep_call: object = None) -> None:
+        self.name = name
+        self.command = command
+        self.prep_call = prep_call
+
+    def choose(self):
+        data = self.prep_call() if self.prep_call else None
+        message = self.command.execute(data) if data else self.command.execute()
+        print(message)
+
+    def __str__(self):
+        return self.name

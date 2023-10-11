@@ -1,0 +1,9 @@
+from business_logic.create_bookmark_table_commands import db
+
+
+class ListBookmarksCommand:
+    def __init__(self, order_by: str = "date_added") -> None:
+        self.order_by = order_by
+
+    def execute(self):
+        return db.select("bookmarks", order_by=self.order_by).fetchall()
