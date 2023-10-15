@@ -3,9 +3,10 @@ import business_logic.create_bookmark_table_commands
 import business_logic.delete_command
 import business_logic.list_bookmarks_commands
 import business_logic.quit_command
+import business_logic.add_github_stars_commands
 from collections import OrderedDict
 
-from presentation.bookmarks import get_new_bookmark_data, get_bookmark_id_for_deletion
+from presentation.bookmarks import get_new_bookmark_data, get_bookmark_id_for_deletion, get_github_import_options
 from presentation.options import Option
 from presentation.user_input import get_option_choice
 from presentation.utils import clear_screen, print_options
@@ -36,6 +37,11 @@ def loop():
                 "Delete a bookmark",
                 business_logic.delete_command.DeleteBookmarkCommand(),
                 prep_call=get_bookmark_id_for_deletion,
+            ),
+            "G": Option(
+                "Import GitHub stars",
+                business_logic.add_github_stars_commands.ImportGitHubStarsCommand(),
+                prep_call=get_github_import_options
             ),
             "Q": Option("Quit", business_logic.quit_command.QuitCommand()),
         }
