@@ -1,6 +1,8 @@
 import sys
 
+from business_logic.command import Command
 
-class QuitCommand:
-    def execute(self) -> None:
+
+class QuitCommand(Command):
+    def execute(self, data=None) -> None:
         sys.exit()

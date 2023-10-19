@@ -1,11 +1,13 @@
 from persistence.database import DatabaseManager
 
+from business_logic.command import Command
+
 database: str = "bookmarks.db"
 db: DatabaseManager = DatabaseManager(database)
 
 
-class CreateBookmarksTableCommand:
-    def execute(self):
+class CreateBookmarksTableCommand(Command):
+    def execute(self, data=None):
         db.create_table(
             "bookmarks",
             {
